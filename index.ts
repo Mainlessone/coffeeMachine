@@ -1,39 +1,3 @@
-// class Water {
-//     private boil: number;
-//     private minWater:number = 0;
-//     private maxWater:number = 1000;
-//     constructor(private volume: number) {};
-
-//     public get(boil: number):number {
-//         this.volume += boil;
-//         if(this.volume > this.maxWater)
-//             throw new Error('Its already filled')
-//         else {
-//             return this.volume;
-//         }
-//     };
-//     public set(boil:number):void {      
-
-//         if(this.volume < this.minWater) {
-//             throw new Error('Not enought water to give!');
-//         }
-//         else {
-//             this.volume -= boil;
-//         }
-//     }
-//     public getCurrentBoil():number {
-//         return this.volume
-//     }
-// }
-
-// const water = new Water(200);
-// debugger
-// console.log(water);
-// water.get(200);
-// console.log(water);
-// water.set(300);
-// console.log(water);
-
 /* ########### Receipt ############
     
 Americano: 200 Water; 0 Milk; 200 Beans;
@@ -41,30 +5,58 @@ Americano: 200 Water; 0 Milk; 200 Beans;
    Espresso: 100 Water; 0 Milk; 300 Beans;
    Flatt White: 200 water: 300 Milk; 200 Beans;
 */
-class Coffe {
+class Coffee {
 
     constructor(
         protected water: number,
-        protected milk: number,
-        protected beans: number
+        protected beans: number,
+        protected milk?: number
         ) {}
 
 }
 
 class Water { 
     constructor(public water: number){}
-
+    setWater(volume) {
+        this.water += volume
+    }
+    getWater(volume):void {
+        this.water -= volume;
+    }
+    currentWater():number {
+        return this.water
+    }
 }
 
 class Beans {
     constructor(public beans: number){}
+
+    setBeans(volume) {
+        this.beans += volume
+    }
+    getBeans(volume):void {
+        this.beans -= volume;
+    }
+    currentBeans():number {
+        return this.beans
+    }
 }
 
 class Milk {
     constructor(public milk: number) {}
+
+    setMilk(volume):void {
+        this.milk += volume
+    }
+    getMilk(volume):void {
+        this.milk -= volume
+    }
+    currentMilk():number {
+        return this.milk
+    }
 }
 
-class CoffeMachine {
+class CoffeeMachine {
 
         constructor(
             public waterController: Water,
@@ -73,39 +65,83 @@ class CoffeMachine {
             ) {}
 
 
-    public getAmericano():Coffe {
-        if(this.waterController > 200 && this.beansController > 200) {
-            this.waterController-= 200;
-
-            return new Coffe(200, 0,200);
+    public getCurrentIngredientInConsole():void {
+        console.log(
+            `Currently 
+            water Volume is ${this.waterController.currentWater()} 
+            beans Volume is ${this.beansController.currentBeans()} 
+            milk Volume is ${this.milkController.currentMilk()}`
+            )
+    }
+    public getAmericano():Coffee {
+        if(this.waterController.currentWater() >= 200 && this.beansController.currentBeans() >= 200) {
+            this.waterController.getWater(200);
+            this.beansController.getBeans(200);
+            console.log('Americano Done!');
+            this.getCurrentIngredientInConsole();
+            return new Coffee(200, 200);
         }
-        throw new Error('Not enough ingridients')
+        else {
+            throw new Error('Not enought ing');
+        }
+        
     }
 
-    public getLatte():Coffe{
-//Todo
-        return new Coffe(200,200,100);
+    public getLatte():Coffee{
+        if(this.waterController.currentWater() >= 200 && this.beansController.currentBeans() >= 100 && this.milkController.currentMilk() >= 200) {
+            this.waterController.getWater(200);
+            this.beansController.getBeans(100);
+            this.milkController.getMilk(200);
+            console.log('Latter done!');
+            this.getCurrentIngredientInConsole();
+            return new Coffee(200, 100, 200);
+        }
+        else {
+            throw new Error('Not enought ing');
+        }
     }
-    public getEspresso():Coffe{
-//Todo
+    public getEspresso():Coffee{
+        if(this.waterController.currentWater() >= 100 && this.beansController.currentBeans() >= 300) {
+            this.waterController.getWater(200);
+            this.beansController.getBeans(300);
+            console.log('Espresso done!');
+            this.getCurrentIngredientInConsole();
+            return new Coffee(100, 300);
+        }
+        else {
+            throw new Error('Not enought ing');
+        }
         
-        return new Coffe(100,0,300);
+        
     }
-    public getFlatWhite():Coffe{
-//Todo
-        return new Coffe(200,300,200);
+    public getFlatWhite():Coffee{
+        if(this.waterController.currentWater() >= 200 && this.beansController.currentBeans() >= 200 && this.milkController.currentMilk() >= 300) {
+            this.waterController.getWater(200);
+            this.beansController.getBeans(200);
+            this.milkController.getMilk(300);
+            console.log('Flatt White Done');
+            this.getCurrentIngredientInConsole();
+            return new Coffee(200, 200, 300);
+        }
+        else {
+            throw new Error('Not enought ing');
+        }
     }
 
     public setWater(volume: number): void {
-
+        this.waterController.setWater(volume);
     }
     
     public setBeans(volume:number): void {
-
+        this.beansController.setBeans(volume);
     }
     public setMilk(volume:number): void {
-        
+        this.milkController.setMilk(volume);
     }
 }
 
-const machine = new CoffeMachine(new Water(2000), new Beans(2000), new Milk(2000))
+const machine = new CoffeeMachine(new Water(2000), new Beans(2000), new Milk(2000));
+machine.getAmericano();
+machine.getEspresso();
+machine.getFlatWhite();
+machine.getLatte();
